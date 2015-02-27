@@ -63,8 +63,8 @@ if (!empty($_POST['function'])||!empty($_GET['function'])) {
 	if (isset($_POST['function']))	$fn = $_POST['function'];
 	else							$fn = $_GET['function'];
 
-	if ((isset($_SESSION['login'])&&$_SESSION['login']===true)&&
-		(isset($_SESSION['identifier'])&&$_SESSION['identifier']===$settings['identifier'])) {
+	$permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
+	if ($permissions == 'admin') {
 
 		###
 		# Admin Access
