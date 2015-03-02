@@ -274,7 +274,6 @@ lychee.setMode = function(mode) {
 
 	if (mode==='public') {
 
-		header.dom('#button_signin, #hostedwith').show()
 		lychee.publicMode = true
 
 	} else if (mode==='view') {
