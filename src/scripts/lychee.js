@@ -166,8 +166,13 @@ lychee.goto = function(url) {
 	if (url===undefined) url = '#'
 	else                 url = '#' + url
 
-	history.pushState(null, null, url)
-	lychee.load()
+	history.pushState(null, null, url);
+
+	/* Sandstorm location */
+	var locationStr = location.toString();
+	window.parent.postMessage({'setPath': location.pathname + location.hash}, '*');
+
+	lychee.load();
 
 }
 
