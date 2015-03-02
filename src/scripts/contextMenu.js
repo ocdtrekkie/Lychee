@@ -25,8 +25,8 @@ contextMenu.settings = function(e) {
 		{ type: 'item', title: build.iconic('sort-ascending') + 'Change Sorting', fn: settings.setSorting },
 		{ type: 'separator' },
 		{ type: 'item', title: build.iconic('info') + 'About Lychee', fn: () => window.open(lychee.website) },
-		{ type: 'item', title: build.iconic('wrench') + 'Diagnostics', fn: () => window.open('plugins/check/') },
-		{ type: 'item', title: build.iconic('align-left') + 'Show Log', fn: () => window.open('plugins/displaylog/') },
+		{ type: 'item', title: build.iconic('wrench') + 'Diagnostics', fn: () => window.open('plugins/check/', '_self') },
+		{ type: 'item', title: build.iconic('align-left') + 'Show Log', fn: () => window.open('plugins/displaylog/', '_self') },
 	]
 
 	basicContext.show(items, e.originalEvent)
