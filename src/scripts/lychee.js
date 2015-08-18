@@ -53,9 +53,6 @@ lychee.init = function() {
 			lychee.location        = data.config.location        || ''
 			lychee.checkForUpdates = data.config.checkForUpdates || '1'
 
-			// Show dialog when there is no username and password
-			if (data.config.login===false) settings.createLogin()
-
 		} else if (data.status===1) {
 
 			// Logged out
