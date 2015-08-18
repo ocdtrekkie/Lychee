@@ -4,7 +4,7 @@ set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-curl git php5-dev mysql-server
+apt-get install -y nginx php5-fpm php5-mysql php5-cli php5-curl git php5-dev mysql-server imagemagick php5-gd php5-imagick
 unlink /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/sandstorm-php <<EOF
 server {
@@ -14,7 +14,7 @@ server {
     server_name localhost;
     root /opt/app;
     location / {
-        index index.php;
+        index index.html;
         try_files \$uri \$uri/ =404;
     }
     location ~ \\.php\$ {
@@ -51,10 +51,9 @@ sed --in-place='' \
 # patch mysql conf to use smaller transaction logs to save disk space
 cat <<EOF > /etc/mysql/conf.d/sandstorm.cnf
 [mysqld]
-# Set the transaction log file to the minimum allowed size to save disk space.
-innodb_log_file_size = 1048576
-# Set the main data file to grow by 1MB at a time, rather than 8MB at a time.
-innodb_autoextend_increment = 1
+innodb_data_file_path = ibdata1:10M:autoextend
+innodb_log_file_size = 10KB
+innodb_file_per_table = 1
 EOF
 # patch nginx conf to not bother trying to setuid, since we're not root
 # also patch errors to go to stderr, and logs nowhere.
@@ -63,6 +62,7 @@ sed --in-place='' \
         --expression 's#^pid /run/nginx.pid#pid /var/run/nginx.pid#' \
         --expression 's/^\s*error_log.*/error_log stderr;/' \
         --expression 's/^\s*access_log.*/access_log off;/' \
+        --expression 's/^\s*gzip\s+\S*/gzip off;/' \
         /etc/nginx/nginx.conf
 # Add a conf snippet providing what sandstorm-http-bridge says the protocol is as var fe_https
 cat > /etc/nginx/conf.d/50sandstorm.conf << EOF

@@ -19,20 +19,53 @@ const pkgdef :Spk.PackageDefinition = (
 
     appTitle = (defaultText = "Lychee"),
 
-    appVersion = 4,  # Increment this for every release.
+    appVersion = 5,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "0.2.0"),
+    appMarketingVersion = (defaultText = "3.0.5"),
 
     actions = [
       # Define your "new document" handlers here.
       ( title = (defaultText = "New Lychee Photo Manager"),
+        nounPhrase = (defaultText = "photo manager"),
         command = .myCommand
         # The command to run when starting for the first time. (".myCommand"
         # is just a constant defined at the bottom of the file.)
       )
     ],
 
-    continueCommand = .myCommand
+    continueCommand = .myCommand,
+
+    metadata = (
+      icons = (
+        appGrid = (png = (
+          dpi1x = embed "app-graphics/lychee-128.png"
+        )),
+        grain = (svg = ( embed "app-graphics/lychee-24.svg")),
+        market =  (png = (
+          dpi1x = embed "app-graphics/lychee-150.png"
+        )),
+      ),
+
+      website = "http://electerious.com",
+      codeUrl = "https://github.com/jparyani/Lychee",
+      license = (openSource = mit),
+      categories = [media],
+
+      author = (
+        contactEmail = "jparyani@sandstorm.io",
+        pgpSignature = embed "pgp-signature",
+        upstreamAuthor = "Electerious",
+      ),
+      pgpKeyring = embed "pgp-keyring",
+
+      description = (defaultText = embed "description.md"),
+
+      screenshots = [
+        (width = 448, height = 233, png = embed "sandstorm-screenshot.png")
+      ],
+
+      changeLog = (defaultText = embed "../docs/CHANGELOG.md"),
+    ),
     # This is the command called to start your app back up after it has been
     # shut down for inactivity. Here we're using the same command as for
     # starting a new instance, but you could use different commands for each
