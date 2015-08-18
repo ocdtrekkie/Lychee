@@ -1,5 +1,5 @@
 #!/bin/bash
-CURRENT_VERSION="0"
+CURRENT_VERSION="1"
 test -d /var/uploads || cp -r /opt/app/var_original/uploads /var
 test -d /var/data || (cp -r /opt/app/var_original/data /var && echo $CURRENT_VERSION > /var/VERSION)
 
