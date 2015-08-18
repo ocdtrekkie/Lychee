@@ -21,6 +21,8 @@ const pkgdef :Spk.PackageDefinition = (
 
     appVersion = 4,  # Increment this for every release.
 
+    appMarketingVersion = (defaultText = "0.2.0"),
+
     actions = [
       # Define your "new document" handlers here.
       ( title = (defaultText = "New Lychee Photo Manager"),
@@ -43,7 +45,15 @@ const pkgdef :Spk.PackageDefinition = (
     # automatically by running it on a FUSE filesystem. So, the mappings
     # here are only to tell it where to find files that the app wants.
     searchPath = [
-      ( sourcePath = "./dockerenv" )
+      ( sourcePath = "." ),  # Search this directory first.
+      ( sourcePath = "/",    # Then search the system root directory.
+        hidePaths = [ "home", "proc", "sys",
+                      "etc/passwd", "etc/hosts", "etc/host.conf",
+                      "etc/nsswitch.conf", "etc/resolv.conf" ]
+        # You probably don't want the app pulling files from these places,
+        # so we hide them. Note that /dev, /var, and /tmp are implicitly
+        # hidden because Sandstorm itself provides them.
+      )
     ]
   ),
 
@@ -51,7 +61,7 @@ const pkgdef :Spk.PackageDefinition = (
   # `spk dev` will write a list of all the files your app uses to this file.
   # You should review it later, before shipping your app.
 
-  alwaysInclude = ["opt/app", "usr/lib/python3.4"],
+  alwaysInclude = ["opt/app"],
   # Fill this list with more names of files or directories that should be
   # included in your package, even if not listed in sandstorm-files.list.
   # Use this to force-include stuff that you know you need but which may
@@ -63,7 +73,7 @@ const pkgdef :Spk.PackageDefinition = (
 
 const myCommand :Spk.Manifest.Command = (
   # Here we define the command used to start up your server.
-  argv = ["/sandstorm-http-bridge", "33411", "--", "/opt/app/run_grain.sh"],
+  argv = ["/sandstorm-http-bridge", "8000", "--", "/opt/app/.sandstorm/launcher.sh"],
   environ = [
     # Note that this defines the *entire* environment seen by your app.
     (key = "PATH", value = "/usr/local/bin:/usr/bin:/bin"),
