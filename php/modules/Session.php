@@ -52,7 +52,7 @@ class Session extends Module {
 
 		# Check if login credentials exist and login if they don't
 		if ($this->noLogin()===true) {
-			$public = false;
+			$public = true;
 			$return['config']['login'] = false;
 		} else {
 			$return['config']['login'] = true;
