@@ -50,12 +50,20 @@ class Session extends Module {
 		# Path to Lychee for the server-import dialog
 		$return['config']['location'] = LYCHEE;
 
-		# Check if login credentials exist and login if they don't
-		if ($this->noLogin()===true) {
-			$public = true;
-			$return['config']['login'] = false;
+		// # Check if login credentials exist and login if they don't
+		// if ($this->noLogin()===true) {
+		// 	$public = true;
+		// 	$return['config']['login'] = false;
+		// } else {
+		// 	$return['config']['login'] = true;
+		// }
+		// Don't login like normal. Instead check sandstorm headers
+		$return['config']['login'] = false;
+		$permissions = array_key_exists('HTTP_X_SANDSTORM_PERMISSIONS', $_SERVER) ? $_SERVER[ 'HTTP_X_SANDSTORM_PERMISSIONS'] : '';
+		if ($permissions == 'admin') {
+			$public = false;
 		} else {
-			$return['config']['login'] = true;
+			$public = true;
 		}
 
 		if ($public===false) {
