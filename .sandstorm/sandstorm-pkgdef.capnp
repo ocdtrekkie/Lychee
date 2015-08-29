@@ -19,7 +19,7 @@ const pkgdef :Spk.PackageDefinition = (
 
     appTitle = (defaultText = "Lychee"),
 
-    appVersion = 6,  # Increment this for every release.
+    appVersion = 7,  # Increment this for every release.
 
     appMarketingVersion = (defaultText = "3.0.5"),
 
@@ -59,6 +59,7 @@ const pkgdef :Spk.PackageDefinition = (
       pgpKeyring = embed "pgp-keyring",
 
       description = (defaultText = embed "description.md"),
+      shortDescription = (defaultText = "Photo album"),
 
       screenshots = [
         (width = 448, height = 233, png = embed "sandstorm-screenshot.png")
@@ -101,7 +102,18 @@ const pkgdef :Spk.PackageDefinition = (
   # not have been detected as a dependency during `spk dev`. If you list
   # a directory here, its entire contents will be included recursively.
 
-  bridgeConfig = (viewInfo = (permissions = [(name = "admin")]))
+  bridgeConfig = (
+    viewInfo = (
+      permissions = [(name = "admin")],
+      roles = [(title = (defaultText = "admin"),
+                permissions = [true,],
+                verbPhrase = (defaultText = "can upload and view all photos")),
+               (title = (defaultText = "viewer"),
+                permissions = [false],
+                verbPhrase = (defaultText = "can view public albums"),
+                default = true)],
+    )
+  )
 );
 
 const myCommand :Spk.Manifest.Command = (
