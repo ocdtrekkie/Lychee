@@ -142,6 +142,7 @@ opt/app/dist/main.js
 opt/app/index.html
 opt/app/php/access/Access.php
 opt/app/php/access/Admin.php
+opt/app/php/access/Guest.php
 opt/app/php/access/Installation.php
 opt/app/php/api.php
 opt/app/php/autoload.php
@@ -164,6 +165,7 @@ opt/app/php/database/update_030003.php
 opt/app/php/define.php
 opt/app/php/modules/Album.php
 opt/app/php/modules/Database.php
+opt/app/php/modules/Log.php
 opt/app/php/modules/Module.php
 opt/app/php/modules/Photo.php
 opt/app/php/modules/Plugins.php
@@ -171,6 +173,7 @@ opt/app/php/modules/Session.php
 opt/app/php/modules/Settings.php
 opt/app/php/modules/misc.php
 opt/app/run_grain.sh
+opt/app/src/images/no_cover.svg
 opt/app/src/images/no_images.svg
 opt/app/uploads
 opt/app/var_original/data
