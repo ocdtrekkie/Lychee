@@ -11,7 +11,6 @@ class Import extends Module {
 
 	private $database	= null;
 	private $settings	= null;
-	private $albumIDs	= null;
 
 	public function __construct($database, $plugins, $settings) {
 
@@ -42,6 +41,7 @@ class Import extends Module {
 		$nameFile[0]['tmp_name']	= $path;
 		$nameFile[0]['error']		= 0;
 		$nameFile[0]['size']		= $size;
+		$nameFile[0]['error']		= UPLOAD_ERR_OK;
 
 		if (!$photo->add($nameFile, $albumID, $description, $tags, true)) return false;
 		return true;
