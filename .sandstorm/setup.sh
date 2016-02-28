@@ -11,6 +11,11 @@ server {
     listen 8000 default_server;
     listen [::]:8000 default_server ipv6only=on;
 
+    # increase upload defaults
+    client_max_body_size 1000M;
+    client_header_timeout 30m;
+    client_body_timeout 30m;
+
     server_name localhost;
     root /opt/app;
     location / {
@@ -76,4 +81,3 @@ EOF
 sed --in-place='' \
         --expression 's/^fastcgi_param *HTTPS.*$/fastcgi_param  HTTPS               \$fe_https if_not_empty;/' \
         /etc/nginx/fastcgi_params
-
