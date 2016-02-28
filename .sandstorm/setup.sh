@@ -10,7 +10,6 @@ cat > /etc/nginx/sites-available/sandstorm-php <<EOF
 server {
     listen 8000 default_server;
     listen [::]:8000 default_server ipv6only=on;
-    client_max_body_size 0;
 
     server_name localhost;
     root /opt/app;
