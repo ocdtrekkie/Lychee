@@ -6,10 +6,10 @@
 lychee = {
 
 	title           : document.title,
-	version         : '3.0.5',
-	version_code    : '030005',
+	version         : '3.0.9',
+	version_code    : '030009',
 
-	update_path     : 'http://lychee.electerious.com/version/index.php',
+	update_path     : '//update.electerious.com/index.json',
 	updateURL       : 'https://github.com/electerious/Lychee',
 	website         : 'http://lychee.electerious.com',
 
@@ -25,7 +25,7 @@ lychee = {
 	dropbox         : false,
 	dropboxKey      : '',
 
-	content         : $('#content'),
+	content         : $('.content'),
 	imageview       : $('#imageview')
 
 }
@@ -116,12 +116,12 @@ lychee.login = function(data) {
 
 lychee.loginDialog = function() {
 
-	let msg = `
+	let msg = lychee.html`
 	          <p class='signIn'>
 	              <input class='text' name='username' autocomplete='username' type='text' value='' placeholder='username' autocapitalize='off' autocorrect='off'>
 	              <input class='text' name='password' autocomplete='current-password' type='password' value='' placeholder='password'>
 	          </p>
-	          <p class='version'>Lychee ${ lychee.version }<span> &#8211; <a target='_blank' href='${ lychee.updateURL }'>Update available!</a><span></p>
+	          <p class='version'>Lychee $${ lychee.version }<span> &#8211; <a target='_blank' href='$${ lychee.updateURL }'>Update available!</a><span></p>
 	          `
 
 	basicModal.show({
@@ -192,7 +192,7 @@ lychee.load = function() {
 		photo.json = null
 
 		// Show Photo
-		if (lychee.content.html()==='' || ($('#search').length && $('#search').val().length!==0)) {
+		if (lychee.content.html()==='' || (header.dom('.header__search').length && header.dom('.header__search').val().length!==0)) {
 			lychee.content.hide()
 			album.load(albumID, true)
 		}
@@ -202,9 +202,6 @@ lychee.load = function() {
 
 		// Trash data
 		photo.json = null
-
-		// Hide sidebar
-		if (visible.sidebar()) sidebar.toggle()
 
 		// Show Album
 		if (visible.photo()) view.photo.hide()
@@ -238,7 +235,7 @@ lychee.getUpdate = function() {
 
 	$.ajax({
 		url     : lychee.update_path,
-		success : function(data) { if (parseInt(data)>parseInt(lychee.version_code)) $('.version span').show() }
+		success : function(data) { if (data.lychee.version>parseInt(lychee.version_code)) $('.version span').show() },
 	})
 
 }
@@ -254,12 +251,12 @@ lychee.setTitle = function(title, editable) {
 
 lychee.setMode = function(mode) {
 
-	$('#button_settings, #button_settings, #button_search, #search, #button_trash_album, #button_share_album, .button_add, .button_divider').remove()
+	$('#button_settings, #button_trash_album, #button_share_album, .button_add, .header__divider').remove()
 	$('#button_trash, #button_move, #button_share, #button_star').remove()
 
 	$(document)
-		.off('click',       '#title.editable')
-		.off('touchend',    '#title.editable')
+		.off('click',       '.header__title--editable')
+		.off('touchend',    '.header__title--editable')
 		.off('contextmenu', '.photo')
 		.off('contextmenu', '.album')
 		.off('drop')
@@ -313,22 +310,12 @@ lychee.animate = function(obj, animation) {
 
 }
 
-lychee.escapeHTML = function(s) {
-
-	return s.replace(/&/g, '&amp;')
-	        .replace(/"/g, '&quot;')
-	        .replace(/</g, '&lt;')
-	        .replace(/>/g, '&gt;')
-
-}
-
 lychee.retinize = function(path = '') {
 
-	let pixelRatio = window.devicePixelRatio,
-	    extention  = path.split('.').pop(),
-	    hasRetina  = extention!=='svg'
+	let extention = path.split('.').pop(),
+	    isPhoto   = extention!=='svg'
 
-	if ((pixelRatio!=null && pixelRatio>1) && hasRetina===true) {
+	if (isPhoto===true) {
 
 		path = path.replace(/\.[^/.]+$/, '')
 		path = path + '@2x' + '.' + extention
@@ -337,7 +324,7 @@ lychee.retinize = function(path = '') {
 
 	return {
 		path,
-		hasRetina
+		isPhoto
 	}
 
 }
@@ -386,14 +373,54 @@ lychee.getEventName = function() {
 
 }
 
-lychee.removeHTML = function(html = '') {
+lychee.escapeHTML = function(html = '') {
 
-	if (html==='') return html
+	// Ensure that html is a string
+	html += ''
 
-	let tmp = document.createElement('DIV')
-	tmp.innerHTML = html
+	// Escape all critical characters
+	html = html.replace(/&/g, '&amp;')
+	           .replace(/</g, '&lt;')
+	           .replace(/>/g, '&gt;')
+	           .replace(/"/g, '&quot;')
+	           .replace(/'/g, '&#039;')
+	           .replace(/`/g, '&#96;')
 
-	return (tmp.textContent || tmp.innerText)
+	return html
+
+}
+
+lychee.html = function(literalSections, ...substs) {
+
+	// Use raw literal sections: we don’t want
+	// backslashes (\n etc.) to be interpreted
+	let raw    = literalSections.raw,
+	    result = ''
+
+	substs.forEach((subst, i) => {
+
+		// Retrieve the literal section preceding
+		// the current substitution
+		let lit = raw[i]
+
+		// If the substitution is preceded by a dollar sign,
+		// we escape special characters in it
+		if (lit.slice(-1)==='$') {
+			subst = lychee.escapeHTML(subst)
+			lit   = lit.slice(0, -1)
+		}
+
+		result += lit
+		result += subst
+
+	})
+
+	// Take care of last literal section
+	// (Never fails, because an empty template string
+	// produces one literal section, an empty string)
+	result += raw[raw.length-1]
+
+	return result
 
 }
 

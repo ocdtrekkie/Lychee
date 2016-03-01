@@ -1,5 +1,5 @@
 ### 1. Requirements
-Everything you need is a web-server with PHP 5.3 or later and a MySQL-Database.
+Everything you need is a web-server with PHP 5.5 or later and a MySQL-Database.
 
 The following PHP extensions must be activated:
 
@@ -25,7 +25,7 @@ You can also use the [direct download](https://github.com/electerious/Lychee/arc
 
 ### 3. Permissions
 
-Change the permissions of `uploads/`, `data/` and all their subfolders. Sufficient read/write privileges are reqiured.
+Change the permissions of `uploads/`, `data/` and all their subfolders. Sufficient read/write privileges are required.
 
 	chmod -R 777 uploads/ data/
 

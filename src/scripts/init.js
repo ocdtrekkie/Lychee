@@ -35,7 +35,7 @@ $(document).ready(function() {
 		})
 		.bind(['s', 'f'], function() {
 			if (visible.photo())       { header.dom('#button_star').click(); return false }
-			else if (visible.albums()) { header.dom('#search').focus(); return false }
+			else if (visible.albums()) { header.dom('.header__search').focus(); return false }
 		})
 		.bind('r', function() {
 			if (visible.album())      { album.setTitle(album.getID()); return false }
@@ -65,11 +65,11 @@ $(document).ready(function() {
 	})
 
 	Mousetrap.bindGlobal(['esc', 'command+up'], function() {
-		if (basicModal.visible()===true)                            basicModal.cancel()
-		else if (visible.contextMenu())                             contextMenu.close()
-		else if (visible.photo())                                   lychee.goto(album.getID())
-		else if (visible.album())                                   lychee.goto('')
-		else if (visible.albums() && $('#search').val().length!==0) search.reset()
+		if (basicModal.visible()===true)                                             basicModal.cancel()
+		else if (visible.contextMenu())                                              contextMenu.close()
+		else if (visible.photo())                                                    lychee.goto(album.getID())
+		else if (visible.album())                                                    lychee.goto('')
+		else if (visible.albums() && header.dom('.header__search').val().length!==0) search.reset()
 		return false
 	})
 
@@ -78,7 +78,7 @@ $(document).ready(function() {
 		$(document)
 
 			// Fullscreen on mobile
-			.on('touchend', '#image', function(e) {
+			.on('touchend', '#imageview #image', function(e) {
 				if (swipe.obj==null || (swipe.offset>=-5&&swipe.offset<=5)) {
 					if (visible.header()) header.hide(e, 0)
 					else                  header.show()
@@ -86,7 +86,7 @@ $(document).ready(function() {
 			})
 
 			// Swipe on mobile
-			.swipe().on('swipeStart', function() { if (visible.photo()) swipe.start($('#image')) })
+			.swipe().on('swipeStart', function() { if (visible.photo()) swipe.start($('#imageview #image')) })
 			.swipe().on('swipeMove',  function(e) { if (visible.photo()) swipe.move(e.swipe) })
 			.swipe().on('swipeEnd',   function(e) { if (visible.photo()) swipe.stop(e.swipe, photo.previous, photo.next) })
 

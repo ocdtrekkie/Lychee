@@ -69,14 +69,20 @@ class Album extends Module {
 		$album['title']		= $data['title'];
 		$album['public']	= $data['public'];
 
+		# Additional attributes
+		# Only part of $album when available
+		if (isset($data['description']))	$album['description'] = $data['description'];
+		if (isset($data['visible']))		$album['visible'] = $data['visible'];
+		if (isset($data['downloadable']))	$album['downloadable'] = $data['downloadable'];
+
 		# Parse date
 		$album['sysdate'] = date('F Y', $data['sysstamp']);
 
 		# Parse password
 		$album['password'] = ($data['password']=='' ? '0' : '1');
 
-		# Set placeholder for thumbs
-		$album['thumbs'] = array();
+		# Parse thumbs or set default value
+		$album['thumbs'] = (isset($data['thumbs']) ? explode(',', $data['thumbs']) : array());
 
 		return $album;
 
@@ -112,8 +118,7 @@ class Album extends Module {
 			default:	$query	= Database::prepare($this->database, "SELECT * FROM ? WHERE id = '?' LIMIT 1", array(LYCHEE_TABLE_ALBUMS, $this->albumIDs));
 						$albums = $this->database->query($query);
 						$return = $albums->fetch_assoc();
-						$return['sysdate']	= date('d M. Y', $return['sysstamp']);
-						$return['password']	= ($return['password']=='' ? '0' : '1');
+						$return = Album::prepareData($return);
 						$query	= Database::prepare($this->database, "SELECT id, title, tags, public, star, album, thumbUrl, takestamp, url FROM ? WHERE album = '?' " . $this->settings['sortingPhotos'], array(LYCHEE_TABLE_PHOTOS, $this->albumIDs));
 						break;
 
@@ -195,7 +200,7 @@ class Album extends Module {
 		# Execute query
 		$albums = $this->database->query($query);
 		if (!$albums) {
-			Log::error($database, __METHOD__, __LINE__, 'Could not get all albums (' . $database->error . ')');
+			Log::error($this->database, __METHOD__, __LINE__, 'Could not get all albums (' . $this->database->error . ')');
 			exit('Error: ' . $this->database->error);
 		}
 
@@ -483,9 +488,6 @@ class Album extends Module {
 		# Call plugins
 		$this->plugins(__METHOD__, 0, func_get_args());
 
-		# Parse
-		if (strlen($title)>100) $title = substr($title, 0, 100);
-
 		# Execute query
 		$query	= Database::prepare($this->database, "UPDATE ? SET title = '?' WHERE id IN (?)", array(LYCHEE_TABLE_ALBUMS, $title, $this->albumIDs));
 		$result = $this->database->query($query);
@@ -508,10 +510,6 @@ class Album extends Module {
 
 		# Call plugins
 		$this->plugins(__METHOD__, 0, func_get_args());
-
-		# Parse
-		$description = htmlentities($description, ENT_COMPAT | ENT_HTML401, 'UTF-8');
-		if (strlen($description)>1000) $description = substr($description, 0, 1000);
 
 		# Execute query
 		$query	= Database::prepare($this->database, "UPDATE ? SET description = '?' WHERE id IN (?)", array(LYCHEE_TABLE_ALBUMS, $description, $this->albumIDs));

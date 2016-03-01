@@ -26,7 +26,7 @@ echo('Diagnostics' . PHP_EOL);
 echo('-----------' . PHP_EOL);
 
 # PHP Version
-if (floatval(phpversion())<5.3)		$error .= ('Error: Upgrade to PHP 5.3 or higher' . PHP_EOL);
+if (floatval(phpversion())<5.5)		$error .= ('Error: Upgrade to PHP 5.5 or higher' . PHP_EOL);
 
 # Extensions
 if (!extension_loaded('session'))	$error .= ('Error: PHP session extension not activated' . PHP_EOL);
@@ -89,6 +89,12 @@ if (!ini_get('allow_url_fopen')) echo('Warning: You may experience problems with
 # Check mysql version
 if ($database->server_version<50500) echo('Warning: Lychee uses the GBK charset to avoid sql injections on your MySQL version. Please update to MySQL 5.5 or higher to enable UTF-8 support.' . PHP_EOL);
 
+# About GD
+$gdVersion = gd_info();
+if (!$gdVersion['JPEG Support'])											$error .= ('Error: PHP gd extension without jpeg support' . PHP_EOL);
+if (!$gdVersion['PNG Support'])												$error .= ('Error: PHP gd extension without png support' . PHP_EOL);
+if (!$gdVersion['GIF Read Support'] || !$gdVersion['GIF Create Support'])	$error .= ('Error: PHP gd extension without full gif support' . PHP_EOL);
+
 # Output
 if ($error==='')	echo('No critical problems found. Lychee should work without problems!' . PHP_EOL);
 else				echo $error;
@@ -97,30 +103,41 @@ else				echo $error;
 echo(PHP_EOL . PHP_EOL . 'System Information' . PHP_EOL);
 echo('------------------' . PHP_EOL);
 
-# Load json
-$json = file_get_contents(LYCHEE_SRC . 'package.json');
-$json = json_decode($json, true);
+# Ensure that user is logged in
+session_start();
 
-# About imagick
-$imagick = extension_loaded('imagick');
-if ($imagick===true)	$imagickVersion = @Imagick::getVersion();
-else					$imagick = '-';
-if (!isset($imagickVersion, $imagickVersion['versionNumber'])||$imagickVersion==='')	$imagickVersion = '-';
-else																					$imagickVersion = $imagickVersion['versionNumber'];
+if ((isset($_SESSION['login'])&&$_SESSION['login']===true)&&
+	(isset($_SESSION['identifier'])&&$_SESSION['identifier']===$settings['identifier'])) {
 
-# About GD
-$gdVersion = gd_info();
+	# Load json
+	$json = file_get_contents(LYCHEE_SRC . 'package.json');
+	$json = json_decode($json, true);
 
-# Output system information
-echo('Lychee Version:  ' . $json['version'] . PHP_EOL);
-echo('DB Version:      ' . $settings['version'] . PHP_EOL);
-echo('System:          ' . PHP_OS . PHP_EOL);
-echo('PHP Version:     ' . floatval(phpversion()) . PHP_EOL);
-echo('MySQL Version:   ' . $database->server_version . PHP_EOL);
-echo('Imagick:         ' . $imagick . PHP_EOL);
-echo('Imagick Active:  ' . $settings['imagick'] . PHP_EOL);
-echo('Imagick Version: ' . $imagickVersion . PHP_EOL);
-echo('GD Version:      ' . $gdVersion['GD Version'] . PHP_EOL);
-echo('Plugins:         ' . $settings['plugins'] . PHP_EOL);
+	# About imagick
+	$imagick = extension_loaded('imagick');
+	if ($imagick===true)	$imagickVersion = @Imagick::getVersion();
+	else					$imagick = '-';
+	if (!isset($imagickVersion, $imagickVersion['versionNumber'])||$imagickVersion==='')	$imagickVersion = '-';
+	else																					$imagickVersion = $imagickVersion['versionNumber'];
+
+	# Output system information
+	echo('Lychee Version:  ' . $json['version'] . PHP_EOL);
+	echo('DB Version:      ' . $settings['version'] . PHP_EOL);
+	echo('System:          ' . PHP_OS . PHP_EOL);
+	echo('PHP Version:     ' . floatval(phpversion()) . PHP_EOL);
+	echo('MySQL Version:   ' . $database->server_version . PHP_EOL);
+	echo('Imagick:         ' . $imagick . PHP_EOL);
+	echo('Imagick Active:  ' . $settings['imagick'] . PHP_EOL);
+	echo('Imagick Version: ' . $imagickVersion . PHP_EOL);
+	echo('GD Version:      ' . $gdVersion['GD Version'] . PHP_EOL);
+	echo('Plugins:         ' . $settings['plugins'] . PHP_EOL);
+
+} else {
+
+	# Don't go further if the user is not logged in
+	echo('You have to be logged in to see more information.');
+	exit();
+
+}
 
 ?>
