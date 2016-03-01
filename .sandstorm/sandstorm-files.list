@@ -179,7 +179,6 @@ opt/app/run_grain.sh
 opt/app/src/images/no_images.svg
 opt/app/uploads
 opt/app/var_original/data
-opt/app/var_original/data/.gitignore
 opt/app/var_original/data/config.php
 opt/app/var_original/uploads
 opt/app/var_original/uploads/big
