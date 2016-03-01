@@ -65,7 +65,7 @@ const pkgdef :Spk.PackageDefinition = (
         (width = 448, height = 233, png = embed "sandstorm-screenshot.png")
       ],
 
-      changeLog = (defaultText = embed "../docs/CHANGELOG.md"),
+      changeLog = (defaultText = embed "../docs/Changelog.md"),
     ),
     # This is the command called to start your app back up after it has been
     # shut down for inactivity. Here we're using the same command as for

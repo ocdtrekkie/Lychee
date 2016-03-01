@@ -140,6 +140,7 @@ opt/app/.user.ini
 opt/app/data
 opt/app/dist/main.css
 opt/app/dist/main.js
+opt/app/favicon.ico
 opt/app/index.html
 opt/app/nginx.conf
 opt/app/php/.user.ini
