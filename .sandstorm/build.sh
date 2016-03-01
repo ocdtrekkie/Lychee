@@ -13,5 +13,5 @@ if [ -f /opt/app/composer.json ] ; then
 fi
 
 mkdir -p var_original
-test -L data || (cp -r data var_original && rm -rf data && ln -s /var/data .)
+test -L data || (rm -rf data && ln -s /var/data .)
 test -L uploads || (cp -r uploads var_original && rm -rf uploads && ln -s /var/uploads .)
